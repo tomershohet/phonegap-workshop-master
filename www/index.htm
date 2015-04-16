@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+table, th , td  {
+  border: 1px solid grey;
+  border-collapse: collapse;
+  padding: 5px;
+}
+table tr:nth-child(odd) {
+  background-color: #f1f1f1;
+}
+table tr:nth-child(even) {
+  background-color: #ffffff;
+}
+</style>
+<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+<script type="text/javascript" src="http://feather.aviary.com/js/feather.js"></script>
+
+
+
+<!-- Instantiate Feather -->
+<script type='text/javascript'>
+   var featherEditor = new Aviary.Feather({
+       apiKey: 'your-key-here',
+       apiVersion: 3,
+       theme: 'dark', // Check out our new 'light' and 'dark' themes!
+       tools: 'all',
+       appendTo: '',
+       onSave: function(imageID, newURL) {
+           var img = document.getElementById(imageID);
+           img.src = newURL;
+       },
+       onError: function(errorObj) {
+           alert(errorObj.message);
+       }
+   });
+   function launchEditor(id, src) {
+       featherEditor.launch({
+           image: id,
+           url: src
+       });
+      return false;
+   }
+</script>
+
+</head>
+
+<body>
+
+<div ng-app="photoApp" ng-controller="photoCtrl"> 
+
+<table>
+  <tr ng-repeat="x in photosFeed">
+      <td class="photoItem" style="font-family: Comic Sans MS; font-size:15px;" ng-Dblclick="like(x)">
+      <div class="topLine">
+        <img src = "{{ x.profilePic }}" style = "width:25px;height:25px;float: left">
+        <span class="userName" style="float: left;">{{ x.name }}</span>
+        <span class="updated" style="float: right;">{{ x.updated }}</span>
+      </div>
+      <div class="photo">
+        <img id = "{{ x.id }}" src = "{{ x.picUrl }}" style = "width:300px;height:300px;padding-top: 3px; padding-bottom: 3px;" ng-click="edit(x)">
+        <!--<img id="editableimage1" src="https://scontent-fra.xx.fbcdn.net/hphotos-xap1/v/t1.0-9/1017301_10152215429677682_908426977_n.jpg?oh=54444f51a80f6bd3478799a48c8aa29b&oe=55DBF690"/>-->
+
+      </div>
+      <div class="bottomLine" style="font-family: Comic Sans MS; font-size:12px;">
+        <span class="title">{{ x.title }}</span><br>
+        <span class="likes" ng-repeat="y in x.likes">{{$first ? "Likes: " : ""}}{{ y }}{{!$last ? ", " : ""}}</span><br>
+        <span class="tags" ng-repeat="y in x.tags">{{$first ? "Tags: " : ""}}{{"#" + y}}{{!$last ? ", " : ""}}</span>
+      </div>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+<script>
+
+var app = angular.module('photoApp', []);
+
+app.controller("photoCtrl", function($scope) {
+    $scope.photosFeed = [{id: "1", name: "Tomer", profilePic: "http://127.0.0.1/Images/Tomer.jpg", updated: "2 hours ago", picUrl: "https://scontent-fra.xx.fbcdn.net/hphotos-xap1/v/t1.0-9/1017301_10152215429677682_908426977_n.jpg?oh=54444f51a80f6bd3478799a48c8aa29b&oe=55DBF690", title: "Now - Let us eat!", tags: ["Akko", "Food"], likes: ["Yael", "Sam"], likesCounter: 2},
+                         {id: "2", name: "Yael", profilePic: "http://127.0.0.1/Images/Yael.jpg", updated: "3 hours ago", picUrl: "http://127.0.0.1/Images/2.jpg", title: "Fun in the snow :-)", tags: ["Snow"], likes: ["Tomer", "Adi", "Neta"], likesCounter: 3},
+                         {id: "3", name: "Sam", profilePic: "http://127.0.0.1/Images/Sam.jpg", updated: "9 hours ago", picUrl: "http://127.0.0.1/Images/3.jpg", title: "Just made my first brade", tags: [], likes: ["Asi"], likesCounter: 1},
+                         {id: "4", name: "Ariel", profilePic: "http://127.0.0.1/Images/Ariel.jpg", updated: "12 hours ago", picUrl: "http://127.0.0.1/Images/4.jpg", title: "Meet Lola", tags: [], likes: ["Lee", "Tomer"], likesCounter: 2}];
+
+                         //$scope.photosFeed = [{id: "1", name: "Tomer", profilePic: "http:\\127.0.0.1\Images\Tomer.jpg", updated: "2 hours ago", picUrl: "https://scontent-fra.xx.fbcdn.net/hphotos-xap1/v/t1.0-9/1017301_10152215429677682_908426977_n.jpg?oh=54444f51a80f6bd3478799a48c8aa29b&oe=55DBF690", title: "Now - Let us eat!", tags: ["Akko", "Food"], likes: ["Yael", "Sam"], likesCounter: 2}];
+
+    $scope.like = function(photo) {
+        photo.likes.push("Tomer");
+    };
+
+    $scope.edit = function(photo) {
+        launchEditor(photo.id, photo.picUrl);
+    };
+});
+</script>
+
+</body>
+</html>
